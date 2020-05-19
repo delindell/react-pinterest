@@ -33,8 +33,8 @@ class App extends React.Component {
   }
 
   render() {
+    const { authed } = this.state;
     const loadComponent = () => {
-      const { authed } = this.state;
       let componentToLoad = '';
       if (authed) {
         componentToLoad = <BoardContainer />;
@@ -46,8 +46,8 @@ class App extends React.Component {
 
     return (
       <div className="App">
-        <h2>React Pinterest</h2>
-        <MyNavBar />
+        <MyNavBar authed={authed}/>
+        <h1>React Pinterest</h1>
         {loadComponent()}
       </div>
     );
