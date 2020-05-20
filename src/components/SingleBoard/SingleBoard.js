@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypez from 'prop-types';
 import './SingleBoard.scss';
+import boardsData from '../../helpers/data/boardsData';
+import pinsData from '../../helpers/data/pinsData';
+import Pin from '../Pin/Pin';
 
 class SingleBoard extends React.Component {
   static propTypes = {
@@ -8,13 +11,40 @@ class SingleBoard extends React.Component {
     setSingleBoard: PropTypez.func.isRequired,
   }
 
+  state = {
+    board: {},
+    pins: [],
+  }
+
+  componentDidMount() {
+    const { boardId } = this.props;
+
+    boardsData.getSingleBoard(boardId)
+      .then((request) => {
+        const board = request.data;
+        this.setState({ board });
+        pinsData.getPinsByBoardId(boardId).then((pins) => {
+          this.setState({ pins });
+        });
+      })
+      .catch((err) => console.error('cound not get board', err));
+  }
+
   render() {
-    const { boardId, setSingleBoard } = this.props;
+    const { setSingleBoard } = this.props;
+    const { board, pins } = this.state;
+
+    const makePins = pins.map((p) => <Pin key={p.id} pin={p}/>);
+
     return (
       <div className="SingleBoard">
         <button className="btn btn-danger" onClick={() => { setSingleBoard(''); }}>X</button>
         <h2>SingleBoard View</h2>
-        <h3>{boardId}</h3>
+        <h2>{board.name} Board</h2>
+        <p>{board.description}</p>
+        <div className="d-flex flex-wrap">
+          {makePins}
+        </div>
       </div>
     );
   }
