@@ -15,7 +15,8 @@ class SingleBoard extends React.Component {
   state = {
     board: {},
     pins: [],
-    openForm: false,
+    editPin: {},
+    formOpen: false,
   }
 
   getInfo = () => {
@@ -51,11 +52,29 @@ class SingleBoard extends React.Component {
       .catch((err) => console.error(err));
   }
 
+  putPin = (pinId, updatedPin) => {
+    pinsData.updatePin(pinId, updatedPin)
+      .then(() => {
+        this.getInfo();
+        this.setState({ formOpen: false, editPin: {} });
+      })
+      .catch((err) => console.error('unable to update pin', err))
+  }
+
+  editAPin = (pin) => {
+    this.setState({ editPin: pin, formOpen: true });
+  }
+
   render() {
     const { setSingleBoard, boardId } = this.props;
-    const { board, pins, formOpen } = this.state;
+    const {
+      board,
+      pins,
+      formOpen,
+      editPin,
+    } = this.state;
 
-    const makePins = pins.map((p) => <Pin key={p.id} pin={p} removePin={this.removePin}/>);
+    const makePins = pins.map((p) => <Pin key={p.id} pin={p} removePin={this.removePin} editAPin={this.editAPin}/>);
 
     return (
       <div className="SingleBoard">
@@ -64,7 +83,7 @@ class SingleBoard extends React.Component {
         <h2>{board.name} Board</h2>
         <p>{board.description}</p>
         <button className="btn btn-danger" onClick={() => this.setState({ formOpen: true })}>Make A Damn Pin</button>
-        { formOpen ? <PinForm boardId={boardId} saveNewPin={this.saveNewPin}/> : '' }
+        { formOpen ? <PinForm boardId={boardId} saveNewPin={this.saveNewPin} pin={editPin} putPin={this.putPin} /> : '' }
         <div className="d-flex flex-wrap">
           {makePins}
         </div>
