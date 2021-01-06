@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.4.1",
     "eslint-config-airbnb-base": "^14.1.0",
     "firebase": "^7.14.3",
